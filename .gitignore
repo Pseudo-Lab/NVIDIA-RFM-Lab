@@ -1,0 +1,19 @@
+# 압축 해제된 폴더가 있으므로 zip 원본은 제외
+*.zip
+
+# OS / 에디터 노이즈
+.DS_Store
+Thumbs.db
+*~
+.idea/
+.vscode/
+
+# Python (혹시 분석 스크립트 등이 생길 경우 대비)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 임시 파일
+*.tmp
+*.bak
