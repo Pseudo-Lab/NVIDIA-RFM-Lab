@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sim2Real Sync · 2026-05-18</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a0f;
+      --panel: #111722;
+      --panel-2: #151d2a;
+      --line: #273449;
+      --text: #e8edf7;
+      --muted: #a7b0c0;
+      --soft: #778299;
+      --accent: #77d3ff;
+      --accent-2: #9ef0c0;
+      --warn: #ffd166;
+      --danger: #ff8f8f;
+      --code: #0b1020;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      width: min(1480px, calc(100vw - 48px));
+      margin: 0 auto;
+      padding: 44px 0 72px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 36px 0 14px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      display: inline-block;
+      max-width: 100%;
+      padding: 2px 6px;
+      border: 1px solid #26334a;
+      border-radius: 5px;
+      background: var(--code);
+      color: #dce7ff;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .titlebar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .date {
+      padding: 6px 10px;
+      border: 1px solid #31425e;
+      border-radius: 999px;
+      color: #d6e0f2;
+      background: #141d2b;
+      font-size: 13px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 12px;
+      min-height: 340px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .task.critical {
+      border-color: #365f82;
+      background: #101a27;
+    }
+
+    .task-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .task-id {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 34px;
+      border: 1px solid #3d5475;
+      border-radius: 8px;
+      color: #dff5ff;
+      background: #142236;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .priority {
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: #0a0d12;
+      background: var(--accent-2);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .priority.mid {
+      background: var(--warn);
+    }
+
+    .priority.parallel {
+      color: var(--text);
+      background: #364153;
+    }
+
+    .task-section {
+      min-width: 0;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--soft);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .owner {
+      color: #d6deed;
+      font-size: 14px;
+    }
+
+    .task ul {
+      display: grid;
+      gap: 4px;
+      padding-left: 18px;
+      margin: 0;
+      color: #d6deed;
+      font-size: 13px;
+    }
+
+    .task li {
+      margin: 0;
+    }
+
+    .task .outcome {
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--accent-2);
+    }
+
+    .task h3 {
+      display: block;
+      margin: 0;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .ref-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ref {
+      max-width: 100%;
+      padding: 4px 8px;
+      border: 1px solid #2c3a51;
+      border-radius: 6px;
+      color: #cdd8e8;
+      background: #0e1420;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .figure {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #2a3548;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .figure p {
+      margin: 10px 0 0;
+      font-size: 13px;
+    }
+
+    .exit {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 10px;
+      padding: 0;
+      margin: 14px 0 0;
+      list-style: none;
+    }
+
+    .exit li,
+    .note {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      color: #d6deed;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .board,
+      .gallery,
+      .exit {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        width: min(100vw - 24px, 1480px);
+        padding-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="titlebar">
+    <h1>Sim2Real Sync Task Board</h1>
+    <div class="date">2026-05-18</div>
+  </div>
+
+  <section class="board">
+    <article class="task critical">
+      <div class="task-head"><span class="task-id">A1</span><span class="priority">Follower · 1순위</span></div>
+      <h3>OMX Follower USD / physics</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>articulation chain 확인</li><li>joint limit / axis / sign 확인</li><li>mass / inertia 확인</li><li>drive stiffness / damping 확인</li><li>friction / effort / velocity 확인</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>follower USD</li><li>joint sanity 표</li><li>physics sanity 표</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><span class="ref">open_manipulator/</span><span class="ref">ROBOTIS 문서</span><span class="ref">XM430 datasheet</span><span class="ref">Assets/Sim2Real.usd</span><span class="ref">logs/2026-05-12.html</span><span class="ref">logs/2026-05-14.html</span></div></div>
+    </article>
+
+    <article class="task critical">
+      <div class="task-head"><span class="task-id">A2</span><span class="priority">Leader · 1순위</span></div>
+      <h3>OMX Leader USD / mapping</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>leader / follower joint name 매칭</li><li>joint order / sign / zero pose 확인</li><li>degree / radian 단위 확인</li><li>joint limit 확인</li><li>drive stiffness / damping 확인</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>leader USD</li><li>leader → follower mapping 표</li><li>drive sanity 표</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><span class="ref">OMX leader USD</span><span class="ref">OMX follower USD</span><span class="ref">Screenshot 19-24-28</span></div></div>
+    </article>
+
+    <article class="task critical">
+      <div class="task-head"><span class="task-id">B</span><span class="priority mid">Scene · 2순위</span></div>
+      <h3>Object / Scene USD 정리</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>object 3종 scale 보정</li><li>object collider 생성</li><li>floor plane / collider 설정</li><li>Shift + 좌클릭 simulation 확인</li><li>여유 시 matte black material 적용</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>bear / chick / fish 개별 USD</li><li>Assets/Sim2Real.usd</li><li>simulation 확인 캡처</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><span class="ref">bear_v2_texture.usd</span><a class="ref" href="https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=1071420&amp;recmYn=N">bear 다이소</a><span class="ref">chick_v2_texture.usd</span><a class="ref" href="https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=1045895&amp;recmYn=Y">chick 다이소</a><span class="ref">fish_v2_texture.usd</span><a class="ref" href="https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=10227271&amp;recmYn=N">fish 다이소</a><span class="ref">Screenshot 19-17-48</span></div></div>
+    </article>
+
+    <article class="task critical">
+      <div class="task-head"><span class="task-id">C</span><span class="priority mid">Env · 3순위</span></div>
+      <h3>OMX_CFG / Isaac Lab env 연결</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>SO101_CFG 패턴 확인</li><li>OMX_CFG 작성</li><li>env config robot / joint 이름 교체</li><li>Teleop-Base 또는 task env spawn 확인</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>OMX_CFG 파일</li><li>env config diff</li><li>spawn 성공 로그 / 캡처</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><span class="ref">assets/so101.py</span><span class="ref">so101_env_cfg.py</span><span class="ref">task_env_cfg.py</span><span class="ref">vials_to_rack_env_cfg.py</span></div></div>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="task-id">D</span><span class="priority parallel">Teleop · Parallel</span></div>
+      <h3>Teleop 입력 경로 검증</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>Galaxy XR / CloudXR handtracking 확인</li><li>keyboard fallback 확인</li><li>가능하면 SpaceMouse 확인</li><li>조작감 / demo 수집 적합성 비교</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>입력 장치 비교표</li><li>연결 조건</li><li>권장 demo 입력 경로</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><a class="ref" href="https://isaac-sim.github.io/IsaacLab/main/source/overview/imitation-learning/teleop_imitation.html">Isaac Lab teleop</a><span class="ref">teleop_se3_agent.py</span><span class="ref">record_demos.py</span><span class="ref">handtracking</span><span class="ref">keyboard</span></div></div>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="task-id">E</span><span class="priority parallel">Replay · Parallel</span></div>
+      <h3>Pre-recorded replay → Mimic augmentation</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>실제 로봇 recording 형식 확인</li><li>Isaac Sim / Isaac Lab replay 가능성 확인</li><li>Mimic annotation 가능성 확인</li><li>augmentation 입력 field 확인</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>recording replay go / no-go 표</li><li>필수 field 목록</li><li>Mimic 변환 절차</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><a class="ref" href="https://isaac-sim.github.io/IsaacLab/main/source/overview/imitation-learning/teleop_imitation.html">Isaac Lab Mimic</a><span class="ref">replay_demos.py</span><span class="ref">annotate_demos.py</span><span class="ref">generate_dataset.py</span></div></div>
+    </article>
+
+    <article class="task">
+      <div class="task-head"><span class="task-id">F</span><span class="priority parallel">DLS · Parallel</span></div>
+      <h3>DLS / 6-DOF target 검증</h3>
+      <div class="task-section"><span class="label">할 일</span><ul><li>roll=0 target 테스트</li><li>roll=45 target 테스트</li><li>DLS IK 결과 비교</li><li>6-DOF target 중 무시되는 성분 확인</li></ul></div>
+      <div class="task-section outcome"><span class="label">산출물</span><ul><li>비교 로그</li><li>최소 재현 절차</li><li>DLS 판단 메모</li></ul></div>
+      <div class="task-section"><span class="label">참고</span><div class="ref-list"><span class="ref">2026-05-15_W1_review.html</span><span class="ref">DifferentialIKControllerCfg</span><span class="ref">FrankaCubeStackIKRelMimicEnv</span></div></div>
+    </article>
+  </section>
+
+  <h2>참고 이미지</h2>
+  <section class="gallery">
+    <figure class="figure">
+      <img src="../logs/media/Screenshot%20from%202026-05-18%2019-17-48.png" alt="Isaac Sim에서 Assets/Sim2Real.usd를 열고 bear, chick, fish와 바닥 Plane을 배치한 상태">
+      <p><code>Assets/Sim2Real.usd</code> object / floor plane 상태</p>
+    </figure>
+    <figure class="figure">
+      <img src="../logs/media/Screenshot%20from%202026-05-18%2019-24-28.png" alt="Isaac Sim에서 OMX follower와 leader를 열고 gripper joint의 Revolute Joint Properties와 limit을 확인하는 예시">
+      <p>OMX follower / leader joint property 확인 예시</p>
+    </figure>
+  </section>
+
+  <h2>이번 주 완료 기준</h2>
+  <ul class="exit">
+    <li>OMX USD 가 articulation chain 으로 인식됨</li>
+    <li>joint limit / axis / sign / mass sanity check 표가 있음</li>
+    <li>object 3종 scale 이 개별 USD 기준으로 맞음</li>
+    <li>object collider 와 floor plane collider 가 simulation 에서 관통 없이 동작함</li>
+    <li>env / teleop / replay / DLS 조사 결과가 task 별 산출물로 남음</li>
+  </ul>
+
+  <h2>기록 위치</h2>
+  <p class="note">각 task 담당자는 결과를 task ID 기준으로 남깁니다. 예: <code>A1_follower_usd_check.md</code>, <code>B_scene_collider_check.md</code>, <code>D_teleop_input_check.md</code></p>
+</main>
+</body>
+</html>
