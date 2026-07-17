@@ -66,8 +66,8 @@
   태스크 물체가 변형·소실됨)
 - GR00T의 학습 단위가 "프레임 1장 + 미래 0.53초 액션" 윈도우라는 성질을 활용해
   3초 조각 증강이 학습에 유효함을 확인
-- 본 배치: 변형 5축(배경/조명 2종/재질 2종) × 450 청크, 필터 통과 100%, H100 ~38시간
-- 산출: **525 에피소드** ([pseudolab/omx_f_PickUpDoll](https://huggingface.co/datasets/pseudolab/omx_f_PickUpDoll) 기반)
+- 본 배치: 5종 변형(배경 1·조명 2·재질 2)에 걸쳐 총 450 청크 증강, 필터 통과 100%, H100 ~38시간
+- 산출: 원본 75 + 증강 450 = **525 에피소드** ([pseudolab/omx_f_PickUpDoll](https://huggingface.co/datasets/pseudolab/omx_f_PickUpDoll) 기반)
 
 ## A-3. 증강 효과 — 베이스라인 대조
 
