@@ -5,6 +5,32 @@
 가짜연구소(Pseudo Lab) Sim2Real 팀에서 진행하는, 실제 로봇 팔(OpenMANIPULATOR)과 커스텀 3D 오브젝트를
 Isaac Sim 가상 환경에 재현하여 Sim-to-Real 학습·검증 파이프라인을 구축하는 것을 목표로 합니다.
 
+> 📋 **[프로젝트 통합 보고서](PROJECT_REPORT.md)** — NVIDIA 로봇 파운데이션 모델 스터디의
+> 두 트랙(Cosmos 증강 기반 GR00T 파인튜닝 + Isaac Sim Sim2Real 시뮬레이션) 전 과정과 결과,
+> 멤버 명단, 공개 산출물([모델](https://huggingface.co/pseudolab/GR00T-N1.7-3B-OMX-PickupDolls)·
+> [데이터셋](https://huggingface.co/datasets/pseudolab/omx_f_PickUpDoll)) 링크 포함
+
+---
+
+## 스터디 트랙과 RFM 결과 요약
+
+본 저장소(Sim2Real 시뮬레이션)는 [NVIDIA 로봇 파운데이션 모델 스터디](https://pseudo-lab.com/projects/4f1a337f-2999-4dd1-a78e-50c937ac444e)의
+두 트랙 중 하나이며, 다른 한 트랙인 **RFM 파인튜닝**에서는 같은 태스크
+(OMX "인형 집어 옮기기")를 실기 데이터로 다뤘습니다:
+
+- **데이터 증강**: 텔레오퍼레이션 75 에피소드를 SAM3 보존 마스크 +
+  **Cosmos-Transfer2.5** 외관 재합성(배경·조명·재질 변형)으로 **525 에피소드**로 확장
+  — 행동 라벨은 프레임 단위로 보존
+- **파인튜닝**: **GR00T N1.7-3B**를 파인튜닝, 베이스라인 대조로 변형 외관에서
+  **MSE 36% 개선** 확인, holdout 검증으로 최적 학습량(14k 스텝) 확정
+- **공개 산출물**: 모델 [pseudolab/GR00T-N1.7-3B-OMX-PickupDolls](https://huggingface.co/pseudolab/GR00T-N1.7-3B-OMX-PickupDolls),
+  데이터셋 [omx_f_PickUpDoll](https://huggingface.co/datasets/pseudolab/omx_f_PickUpDoll) ·
+  [omx_f_PickUpDollWith2Cam](https://huggingface.co/datasets/pseudolab/omx_f_PickUpDollWith2Cam)
+- 이 저장소의 3D 인형(bear·chick·fish)은 RFM 트랙 실기 데이터와 **같은 물체**로,
+  파인튜닝된 정책의 시뮬레이션 검증과 분포 확장 데이터 생산이 후속 과제입니다
+
+전 과정과 수치는 **[프로젝트 통합 보고서](PROJECT_REPORT.md)** 참고.
+
 ---
 
 ## 구성
