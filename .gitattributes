@@ -1,2 +1,2 @@
 *.fbx filter=lfs diff=lfs merge=lfs -text
-Assets/Image_to_3D/mesh/**/*.png filter=lfs diff=lfs merge=lfs -text
+Simulation_Team/Assets/Image_to_3D/mesh/**/*.png filter=lfs diff=lfs merge=lfs -text
