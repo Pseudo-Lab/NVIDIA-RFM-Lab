@@ -138,3 +138,53 @@ Isaac Sim 씬의 로봇 모델(URDF/메시)이 여기서 유래하며, 실기(Re
 
 - 이 저장소: MIT License (© 2026 가짜연구소 / Pseudo Lab) — [`LICENSE`](LICENSE)
 - `open_manipulator/`: ROBOTIS 원본 라이선스([`open_manipulator/LICENSE`](open_manipulator/LICENSE))를 따릅니다.
+
+---
+
+## 실행 방법 (Simulation_Team teleop)
+
+### 요구 사항
+
+- **NVIDIA Isaac Sim 5.1 + Isaac Lab** (아래 예시는 `~/IsaacLab` 설치 기준)
+- Isaac(kit) python에 **lerobot** 설치 (OMX leader 통신용)
+- **ROBOTIS OMX-L leader** — USB-C 한 가닥으로 전원+데이터, 기본 포트 `/dev/ttyACM0`
+
+### Teleop 실행
+
+저장소 루트에서:
+
+```bash
+export HF_LEROBOT_HOME=<lerobot 홈>   # omx_leader 캘리브레이션 json 이 있는 경로
+PYTHONPATH=Simulation_Team/sim2real ~/IsaacLab/isaaclab.sh -p \
+  Simulation_Team/sim2real/sim_to_real_so101/scripts/omx_teleop_scene_direct.py \
+  --port /dev/ttyACM0 --robot_id omx_leader_arm --leader_type omx
+```
+
+- 씬은 기본으로 `Simulation_Team/Assets/Sim2Real.usd` 를 엽니다 (`--usd` 로 변경 가능).
+- 시작 시 저장된 zero 정렬(json)과 UI 레이아웃을 자동 로드합니다.
+- 녹화물은 기본 `~/sim2real/datasets/omx_scene_direct/episode_NNNN/` 에 저장됩니다 (`--record_root` 로 변경).
+
+### 키맵
+
+| 키 | 동작 |
+|----|------|
+| `S` | 에피소드 녹화 시작/종료 (종료 시 이름·메모 저장 다이얼로그) |
+| `C` | 녹화 취소 (폴더는 `__cancelled` 로 보존) |
+| `R` | world reset (오브젝트·로봇 시작 배치 복원) |
+| `Z` | leader zero 재정렬 (sim 초기 자세에 leader 를 맞춘 뒤 누름) |
+| `P` | 뷰포트 스크린샷 → 바탕화면 저장 |
+| `L` | 현재 UI 레이아웃 저장 (다음 실행 시 자동 복원) |
+
+리플레이는 **OMX Recording** 패널에서 에피소드 선택 후 `Play` (재생 전 자동 reset).
+
+### LeRobotDataset 변환 (후처리 — Isaac 불필요)
+
+```bash
+PYTHONPATH=Simulation_Team/sim2real python \
+  Simulation_Team/sim2real/sim_to_real_so101/scripts/omx_episodes_to_lerobot.py \
+  --episodes_root ~/sim2real/datasets/omx_scene_direct \
+  --repo_id <hf-user>/<dataset-name> --task_name "Pick toys into tray"
+```
+
+녹화 에피소드(`frames/*.png` + `trajectory.jsonl`)를 워크샵 표준 LeRobotDataset
+(action / observation.state / observation.images.workspace)으로 변환합니다.
